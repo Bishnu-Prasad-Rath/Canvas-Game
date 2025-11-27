@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Canvas Tutorial</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        header {
+            background: #2c3e50;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+        
+        .explanation {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+        }
+        
+        .canvas-container {
+            flex: 2;
+            min-width: 300px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        canvas {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 50px;
+            background: #3498db;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        button.active {
+            background: #16a085;
+        }
+        
+        .code-sample {
+            background: #2d3436;
+            color: #f5f6fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .radian-guide {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .radian-item {
+            text-align: center;
+            margin: 10px;
+            padding: 10px;
+            background: #f8efba;
+            border-radius: 8px;
+            min-width: 100px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #2c3e50;
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+        }
+        
+        .section-title {
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin: 30px 0 15px 0;
+            color: #2c3e50;
+        }
+        
+        .color-picker {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+        
+        .color-label {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Complete Canvas Tutorial</h1>
+            <p class="subtitle">Learn all about Canvas: Rectangles, Lines, Circles, Arcs, Text, Bezier Curves, and Images</p>
+        </header>
+        
+        <div class="content">
+            <div class="explanation">
+                <h2>Canvas Drawing Basics</h2>
+                <p>HTML5 Canvas provides a powerful way to draw graphics using JavaScript. You can draw shapes, lines, curves, text, and images.</p>
+                
+                <div class="code-sample">
+                    // Basic setup<br>
+                    var canvas = document.getElementById('tutorialCanvas');<br>
+                    var ctx = canvas.getContext('2d');<br><br>
+                    
+                    // Drawing a rectangle<br>
+                    ctx.fillStyle = 'blue';<br>
+                    ctx.fillRect(50, 50, 100, 75);
+                </div>
+                
+                <h3>Understanding Radians</h3>
+                <p>In canvas, angles are measured in radians, not degrees. The relationship is:</p>
+                
+                <div class="radian-guide">
+                    <div class="radian-item">0° = 0 rad</div>
+                    <div class="radian-item">90° = π/2 rad</div>
+                    <div class="radian-item">180° = π rad</div>
+                    <div class="radian-item">270° = 3π/2 rad</div>
+                    <div class="radian-item">360° = 2π rad</div>
+                </div>
+                
+                <p>Remember: 0 radians starts at the 3 o'clock position!</p>
+                
+                <h3 class="section-title">Text on Canvas</h3>
+                <p>You can render text on canvas with various fonts, sizes, and styles.</p>
+                
+                <div class="code-sample">
+                    // Drawing text<br>
+                    ctx.font = '30px Arial';<br>
+                    ctx.fillStyle = 'purple';<br>
+                    ctx.fillText('Hello Canvas!', 50, 50);<br><br>
+                    
+                    // Outlined text<br>
+                    ctx.font = 'bold 40px Georgia';<br>
+                    ctx.strokeStyle = 'darkblue';<br>
+                    ctx.strokeText('Outlined Text', 50, 100);
+                </div>
+                
+                <h3 class="section-title">Bezier Curves</h3>
+                <p>Bezier curves are defined by context points and control points that shape the curve.</p>
+                
+                <div class="code-sample">
+                    // Quadratic Bezier curve<br>
+                    ctx.beginPath();<br>
+                    ctx.moveTo(50, 200);<br>
+                    ctx.quadraticCurveTo(150, 50, 250, 200);<br>
+                    ctx.stroke();<br><br>
+                    
+                    // Cubic Bezier curve<br>
+                    ctx.beginPath();<br>
+                    ctx.moveTo(50, 200);<br>
+                    ctx.bezierCurveTo(100, 50, 200, 50, 250, 200);<br>
+                    ctx.stroke();
+                </div>
+                
+                <h3 class="section-title">Images on Canvas</h3>
+                <p>You can draw images onto canvas, either from the page or loaded dynamically.</p>
+                
+                <div class="code-sample">
+                    // Drawing an image<br>
+                    var img = new Image();<br>
+                    img.onload = function() {<br>
+                    &nbsp;&nbsp;ctx.drawImage(img, 50, 50, 200, 200);<br>
+                    };<br>
+                    img.src = 'image.jpg';
+                </div>
+            </div>
+            
+            <div class="canvas-container">
+                <canvas id="tutorialCanvas" width="500" height="500"></canvas>
+                
+                <div class="controls">
+                    <button id="rectBtn">Rectangle</button>
+                    <button id="lineBtn">Line</button>
+                    <button id="circleBtn">Circle</button>
+                    <button id="arcBtn">Arc</button>
+                    <button id="textBtn">Text</button>
+                    <button id="bezierBtn">Bezier</button>
+                    <button id="imageBtn">Image</button>
+                    <button id="clearBtn">Clear</button>
+                </div>
+                
+                <div class="color-picker">
+                    <span class="color-label">Stroke Color:</span>
+                    <input type="color" id="strokeColor" value="#3498db">
+                </div>
+                
+                <div class="color-picker">
+                    <span class="color-label">Fill Color:</span>
+                    <input type="color" id="fillColor" value="#2ecc71">
+                </div>
+                
+                <div class="code-sample" id="currentCode">
+                    // Code will appear here
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Created to help you learn and remember all Canvas drawing techniques</p>
+        </footer>
+    </div>
+
+    <script>
+        // Canvas setup
+        const canvas = document.getElementById('tutorialCanvas');
+        const ctx = canvas.getContext('2d');
+        const currentCode = document.getElementById('currentCode');
+        const strokeColor = document.getElementById('strokeColor');
+        const fillColor = document.getElementById('fillColor');
+        
+        // Button references
+        const rectBtn = document.getElementById('rectBtn');
+        const lineBtn = document.getElementById('lineBtn');
+        const circleBtn = document.getElementById('circleBtn');
+        const arcBtn = document.getElementById('arcBtn');
+        const textBtn = document.getElementById('textBtn');
+        const bezierBtn = document.getElementById('bezierBtn');
+        const imageBtn = document.getElementById('imageBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        
+        // Set initial active button
+        rectBtn.classList.add('active');
+        
+        // Draw initial example
+        drawRectangle();
+        
+        // Button event listeners
+        rectBtn.addEventListener('click', () => {
+            setActiveButton(rectBtn);
+            drawRectangle();
+        });
+        
+        lineBtn.addEventListener('click', () => {
+            setActiveButton(lineBtn);
+            drawLine();
+        });
+        
+        circleBtn.addEventListener('click', () => {
+            setActiveButton(circleBtn);
+            drawCircle();
+        });
+        
+        arcBtn.addEventListener('click', () => {
+            setActiveButton(arcBtn);
+            drawArc();
+        });
+        
+        textBtn.addEventListener('click', () => {
+            setActiveButton(textBtn);
+            drawText();
+        });
+        
+        bezierBtn.addEventListener('click', () => {
+            setActiveButton(bezierBtn);
+            drawBezier();
+        });
+        
+        imageBtn.addEventListener('click', () => {
+            setActiveButton(imageBtn);
+            drawImage();
+        });
+        
+        clearBtn.addEventListener('click', () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            currentCode.textContent = "// Canvas cleared";
+        });
+        
+        function setActiveButton(button) {
+            // Remove active class from all buttons
+            [rectBtn, lineBtn, circleBtn, arcBtn, textBtn, bezierBtn, imageBtn].forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Add active class to clicked button
+            button.classList.add('active');
+        }
+        
+        function drawRectangle() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw a rectangle
+            ctx.fillStyle = fillColor.value;
+            ctx.fillRect(100, 100, 200, 150);
+            
+            // Draw coordinate markers
+            drawCoordinates(100, 100, "x, y");
+            drawCoordinates(300, 250, "x + width, y + height");
+            
+            // Update code sample
+            currentCode.textContent = 
+                "// Drawing a filled rectangle\n" +
+                `ctx.fillStyle = '${fillColor.value}';\n` +
+                "ctx.fillRect(100, 100, 200, 150); // (x, y, width, height)";
+        }
+        
+        function drawLine() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw a line
+            ctx.beginPath();
+            ctx.moveTo(100, 100);
+            ctx.lineTo(400, 300);
+            ctx.strokeStyle = strokeColor.value;
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            
+            // Draw coordinate markers
+            drawCoordinates(100, 100, "moveTo(x, y)");
+            drawCoordinates(400, 300, "lineTo(x, y)");
+            
+            // Update code sample
+            currentCode.textContent = 
+                "// Drawing a line\n" +
+                "ctx.beginPath();\n" +
+                "ctx.moveTo(100, 100); // Starting point\n" +
+                "ctx.lineTo(400, 300); // Ending point\n" +
+                `ctx.strokeStyle = '${strokeColor.value}';\n` +
+                "ctx.lineWidth = 3;\n" +
+                "ctx.stroke();";
+        }
+        
+        function drawCircle() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw a circle
+            ctx.beginPath();
+            ctx.arc(250, 200, 100, 0, Math.PI * 2);
+            ctx.fillStyle = fillColor.value;
+            ctx.fill();
+            
+            // Draw center point and radius
+            drawCoordinates(250, 200, "center (x, y)");
+            ctx.beginPath();
+            ctx.moveTo(250, 200);
+            ctx.lineTo(350, 200);
+            ctx.strokeStyle = '#7f8c8d';
+            ctx.setLineDash([5, 3]);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            // Add radius label
+            ctx.fillStyle = '#7f8c8d';
+            ctx.font = '14px Arial';
+            ctx.fillText('radius', 290, 190);
+            
+            // Update code sample
+            currentCode.textContent = 
+                "// Drawing a circle\n" +
+                "ctx.beginPath();\n" +
+                "ctx.arc(250, 200, 100, 0, Math.PI * 2);\n" +
+                "// (centerX, centerY, radius, startAngle, endAngle)\n" +
+                `ctx.fillStyle = '${fillColor.value}';\n` +
+                "ctx.fill();";
+        }
+        
+        function drawArc() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw a full circle for reference
+            ctx.beginPath();
+            ctx.arc(250, 200, 100, 0, Math.PI * 2);
+            ctx.strokeStyle = '#bdc3c7';
+            ctx.stroke();
+            
+            // Draw an arc (3/4 circle)
+            ctx.beginPath();
+            ctx.arc(250, 200, 80, 0, Math.PI * 1.5);
+            ctx.strokeStyle = strokeColor.value;
+            ctx.lineWidth = 4;
+            ctx.stroke();
+            
+            // Draw the angle indicators
+            drawAngleIndicator(250, 200, 80, 0, Math.PI * 1.5);
+            
+            // Draw coordinate markers
+            drawCoordinates(250, 200, "center (x, y)");
+            
+            // Add labels for angles
+            ctx.fillStyle = '#2c3e50';
+            ctx.font = '14px Arial';
+            ctx.fillText('0° (0 rad) - 3 o\'clock', 340, 210);
+            ctx.fillText('270° (3π/2 rad)', 180, 120);
+            
+            // Update code sample
+            currentCode.textContent = 
+                "// Drawing an arc (3/4 circle)\n" +
+                "ctx.beginPath();\n" +
+                "ctx.arc(250, 200, 80, 0, Math.PI * 1.5);\n" +
+                "// (centerX, centerY, radius, startAngle, endAngle)\n" +
+                `ctx.strokeStyle = '${strokeColor.value}';\n` +
+                "ctx.lineWidth = 4;\n" +
+                "ctx.stroke();";
+        }
+        
+        function drawText() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw filled text
+            ctx.font = '30px Arial';
+            ctx.fillStyle = fillColor.value;
+            ctx.fillText('Hello Canvas!', 100, 100);
+            
+            // Draw stroked text
+            ctx.font = 'bold 40px Georgia';
+            ctx.strokeStyle = strokeColor.value;
+            ctx.lineWidth = 2;
+            ctx.strokeText('Outlined Text', 80, 180);
+            
+            // Draw combined text
+            ctx.font = 'italic 36px Verdana';
+            ctx.fillStyle = '#e74c3c';
+            ctx.strokeStyle = '#2c3e50';
+            ctx.lineWidth = 1.5;
+            ctx.fillText('Filled and Stroked', 70, 260);
+            ctx.strokeText('Filled and Stroked', 70, 260);
+            
+            // Update code sample
+            currentCode.textContent = 
+                "// Drawing filled text\n" +
+                "ctx.font = '30px Arial';\n" +
+                `ctx.fillStyle = '${fillColor.value}';\n` +
+                "ctx.fillText('Hello Canvas!', 100, 100);\n\n" +
+                "// Drawing outlined text\n" +
+                "ctx.font = 'bold 40px Georgia';\n" +
+                `ctx.strokeStyle = '${strokeColor.value}';\n` +
+                "ctx.lineWidth = 2;\n" +
+                "ctx.strokeText('Outlined Text', 80, 180);";
+        }
+        
+        function drawBezier() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw quadratic Bezier curve
+            ctx.beginPath();
+            ctx.moveTo(50, 400);
+            ctx.quadraticCurveTo(250, 100, 450, 400);
+            ctx.strokeStyle = strokeColor.value;
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            
+            // Draw control points for quadratic curve
+            drawControlPoints(50, 400, 250, 100, 450, 400, false);
+            
+            // Draw cubic Bezier curve
+            ctx.beginPath();
+            ctx.moveTo(50, 200);
+            ctx.bezierCurveTo(150, 50, 350, 50, 450, 200);
+            ctx.strokeStyle = fillColor.value;
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            
+            // Draw control points for cubic curve
+            drawControlPoints(50, 200, 150, 50, 350, 50, true);
+            drawControlPoints(450, 200, 350, 50, 150, 50, true);
+            
+            // Update code sample
+            currentCode.textContent = 
+                "// Quadratic Bezier curve\n" +
+                "ctx.beginPath();\n" +
+                "ctx.moveTo(50, 400);\n" +
+                "ctx.quadraticCurveTo(250, 100, 450, 400);\n" +
+                "// (controlX, controlY, endX, endY)\n" +
+                `ctx.strokeStyle = '${strokeColor.value}';\n` +
+                "ctx.lineWidth = 3;\n" +
+                "ctx.stroke();\n\n" +
+                "// Cubic Bezier curve\n" +
+                "ctx.beginPath();\n" +
+                "ctx.moveTo(50, 200);\n" +
+                "ctx.bezierCurveTo(150, 50, 350, 50, 450, 200);\n" +
+                "// (controlX1, controlY1, controlX2, controlY2, endX, endY)\n" +
+                `ctx.strokeStyle = '${fillColor.value}';\n` +
+                "ctx.lineWidth = 3;\n" +
+                "ctx.stroke();";
+        }
+        
+        function drawImage() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw a placeholder image
+            ctx.fillStyle = '#ecf0f1';
+            ctx.fillRect(100, 100, 300, 200);
+            
+            ctx.fillStyle = '#bdc3c7';
+            ctx.font = '20px Arial';
+            ctx.fillText('Image Placeholder', 160, 210);
+            
+            ctx.strokeStyle = strokeColor.value;
+            ctx.lineWidth = 2;
+            ctx.strokeRect(100, 100, 300, 200);
+            
+            // Draw a smaller image representation
+            ctx.fillStyle = fillColor.value;
+            ctx.fillRect(150, 130, 50, 40);
+            
+            ctx.fillStyle = strokeColor.value;
+            ctx.fillRect(210, 130, 50, 40);
+            
+            ctx.fillStyle = '#e74c3c';
+            ctx.fillRect(270, 130, 50, 40);
+            
+            // Draw text
+            ctx.fillStyle = '#2c3e50';
+            ctx.font = '16px Arial';
+            ctx.fillText('Image would be drawn here', 140, 270);
+            
+            // Update code sample
+            currentCode.textContent = 
+                "// Drawing an image on canvas\n" +
+                "var img = new Image();\n" +
+                "img.onload = function() {\n" +
+                "  ctx.drawImage(img, 100, 100, 300, 200);\n" +
+                "  // (image, x, y, width, height)\n" +
+                "};\n" +
+                "img.src = 'image.jpg';\n\n" +
+                "// Alternatively, using an existing image\n" +
+                "var pageImage = document.getElementById('myImage');\n" +
+                "ctx.drawImage(pageImage, 100, 100, 300, 200);";
+        }
+        
+        function drawCoordinates(x, y, label) {
+            // Draw a point
+            ctx.beginPath();
+            ctx.arc(x, y, 5, 0, Math.PI * 2);
+            ctx.fillStyle = '#e74c3c';
+            ctx.fill();
+            
+            // Draw label
+            ctx.fillStyle = '#2c3e50';
+            ctx.font = '12px Arial';
+            ctx.fillText(label, x + 10, y - 10);
+        }
+        
+        function drawAngleIndicator(cx, cy, radius, startAngle, endAngle) {
+            // Draw start angle line
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.lineTo(cx + radius * Math.cos(startAngle), cy + radius * Math.sin(startAngle));
+            ctx.strokeStyle = '#e67e22';
+            ctx.setLineDash([5, 3]);
+            ctx.stroke();
+            
+            // Draw end angle line
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.lineTo(cx + radius * Math.cos(endAngle), cy + radius * Math.sin(endAngle));
+            ctx.stroke();
+            
+            ctx.setLineDash([]);
+            
+            // Draw angle arc
+            ctx.beginPath();
+            ctx.arc(cx, cy, 30, startAngle, endAngle);
+            ctx.strokeStyle = '#e67e22';
+            ctx.stroke();
+        }
+        
+        function drawControlPoints(startX, startY, controlX, controlY, endX, endY, isCubic) {
+            // Draw control points
+            ctx.beginPath();
+            ctx.arc(controlX, controlY, 5, 0, Math.PI * 2);
+            ctx.fillStyle = '#e67e22';
+            ctx.fill();
+            
+            // Draw line from start to control point
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(controlX, controlY);
+            ctx.strokeStyle = '#95a5a6';
+            ctx.setLineDash([5, 3]);
+            ctx.stroke();
+            
+            // Draw line from end to control point (if cubic)
+            if (isCubic) {
+                ctx.beginPath();
+                ctx.moveTo(endX, endY);
+                ctx.lineTo(controlX, controlY);
+                ctx.stroke();
+            }
+            
+            ctx.setLineDash([]);
+            
+            // Draw label
+            ctx.fillStyle = '#2c3e50';
+            ctx.font = '12px Arial';
+            ctx.fillText('Control Point', controlX + 10, controlY - 10);
+        }
+    </script>
+</body>
+</html>
+

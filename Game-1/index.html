@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2D Shooting Game</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <!-- GSAP for animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"
+    integrity="sha512-NcZdtrT77bJr4STcmsGAESr06BYGE8woZdSdEgqnpyqac7sugNO+Tr4bGwGF3MsnEkGKhU2KL2xh6Ec+BqsaHA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <style>
+    body {
+      margin: 0;
+      background-color: black;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <!-- Score display -->
+  <div class="fixed text-white ml-10 mt-15 text-2xl select-none">
+    <span>Score: </span><span id="scoreEl">0</span>
+  </div>
+
+  <!-- Game over / menu screen -->
+  <div class="fixed inset-0 flex items-center justify-center" id="modelEl">
+    <div class="bg-white max-w-md w-full p-6 text-center rounded-lg">
+      <h1 class="text-4xl font-bold leading-none" id="bigScoreEl">0</h1>
+      <p class="text-sm text-gray-700">Points</p>
+      <div>
+        <button
+          class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-3 rounded-full w-full my-3"
+          id="startGameBtn">
+          Play Again
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game Canvas -->
+  <canvas></canvas>
+
+  <!-- Game Script -->
+  <script src="./index.js"></script>
+</body>
+</html>
