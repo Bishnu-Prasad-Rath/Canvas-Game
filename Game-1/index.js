@@ -1,3 +1,97 @@
+const authModal = document.getElementById("authModal");
+const loginBtn = document.getElementById("loginBtn");
+const registerBtn = document.getElementById("registerBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+const userLabel = document.getElementById("userLabel");
+const topBar = document.getElementById("topBar");
+const exitGameBtn = document.getElementById("exitGameBtn");
+
+// ===============
+// UI NAVIGATION 
+// ===============
+
+const homePage = document.getElementById("homePage");
+const gamePage = document.getElementById("gamePage");
+const playBtn = document.getElementById("playBtn");
+const leaderboardList = document.getElementById("leaderboardList");
+
+exitGameBtn.onclick = () => {
+  // stop the game loop
+  cancelAnimationFrame(animationId);
+
+  // hide game page
+  gamePage.classList.add("hidden");
+
+  // show home page
+  homePage.classList.remove("hidden");
+
+  // hide game over modal
+  modalEl.style.display = "none";
+
+  // refresh leaderboard
+  loadLeaderboard();
+};
+
+
+playBtn.onclick = () => {
+  homePage.classList.add("hidden");
+  gamePage.classList.remove("hidden");
+
+  init();
+  animate();
+  spawnEnemies();
+  modalEl.style.display = "none";
+};
+
+let token = localStorage.getItem("token");
+let isGameOver = false;
+
+
+if (token) {
+  authModal.style.display = "none";
+  topBar.classList.remove("hidden");
+  userLabel.innerText = localStorage.getItem("username");
+}
+
+loginBtn.onclick = async () => {
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+
+  const res = await fetch("http://localhost:5000/api/auth/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password })
+  });
+
+  const data = await res.json();
+  if (data.token) {
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("username", data.username);
+    location.reload();
+  } else {
+    alert("Login failed");
+  }
+};
+
+registerBtn.onclick = async () => {
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+
+  await fetch("http://localhost:5000/api/auth/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password })
+  });
+
+  alert("Registered! Now login.");
+};
+
+logoutBtn.onclick = () => {
+  localStorage.clear();
+  location.reload();
+};
+
+
 // ===== CANVAS SETUP =====
 const canvas = document.querySelector('canvas');
 const c = canvas.getContext('2d');
@@ -168,7 +262,58 @@ function init() {
   shake = { x: 0, y: 0, intensity: 0, duration: 0 };
   scoreEl.innerHTML = score;
   bigScoreEl.innerHTML = score;
+  isGameOver = false;
 }
+
+//Leaderboard loading
+
+async function loadLeaderboard() {
+  const res = await fetch("http://localhost:5000/api/score/leaderboard");
+  const data = await res.json();
+
+  leaderboardList.innerHTML = "";
+
+  if (data.length === 0) {
+    leaderboardList.innerHTML =
+      "<li class='text-center text-gray-400'>No scores yet</li>";
+    return;
+  }
+
+  data.forEach((item, index) => {
+    const li = document.createElement("li");
+
+    // Colors for top 3
+    const rankColors = [
+      "text-yellow-400", // 🥇
+      "text-gray-300",   // 🥈
+      "text-amber-600"   // 🥉
+    ];
+
+    li.className = `
+      flex items-center justify-between
+      px-4 py-2 rounded-lg
+      bg-white/5 hover:bg-white/10 transition
+      ${rankColors[index] || "text-gray-300"}
+    `;
+
+    li.innerHTML = `
+      <div class="flex items-center gap-3">
+        <span class="font-bold w-4">${index + 1}</span>
+        <span class="truncate max-w-[140px]">${item.username}</span>
+      </div>
+
+      <span class="font-extrabold text-green-400">
+        ${item.score}
+      </span>
+    `;
+
+    leaderboardList.appendChild(li);
+  });
+}
+
+loadLeaderboard();
+
+
 
 function spawnEnemies() {
   setInterval(() => {
@@ -246,11 +391,26 @@ function animate() {
       health -= 20;
       if (soundUnlocked) sounds.hit.play();
       enemies.splice(enemyIndex, 1);
-      if (health <= 0) {
-        cancelAnimationFrame(animationId);
-        modalEl.style.display = 'flex';
-        bigScoreEl.innerHTML = score;
-      }
+if (health <= 0) {
+  isGameOver = true;
+  cancelAnimationFrame(animationId);
+  modalEl.style.display = 'flex';
+  bigScoreEl.innerHTML = score;
+
+  // SEND SCORE TO BACKEND (ONLY ONCE)
+  const token = localStorage.getItem("token");
+  if (token) {
+    fetch("http://localhost:5000/api/score", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": token
+      },
+      body: JSON.stringify({ score })
+    });
+  }
+}
+
     }
 
     // collision with projectiles

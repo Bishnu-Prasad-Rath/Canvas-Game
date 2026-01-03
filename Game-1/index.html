@@ -7,44 +7,129 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
-  <!-- GSAP for animations -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"
-    integrity="sha512-NcZdtrT77bJr4STcmsGAESr06BYGE8woZdSdEgqnpyqac7sugNO+Tr4bGwGF3MsnEkGKhU2KL2xh6Ec+BqsaHA=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
 
   <style>
     body {
       margin: 0;
-      background-color: black;
+      background: radial-gradient(circle at top, #0f172a, #000);
       overflow: hidden;
+      font-family: ui-sans-serif, system-ui;
     }
   </style>
 </head>
+
 <body>
-  <!-- Score display -->
-  <div class="fixed text-white ml-10 mt-15 text-2xl select-none">
-    <span>Score: </span><span id="scoreEl">0</span>
+
+<!-- SCORE HUD -->
+<div class="fixed top-6 left-6 z-40 flex items-center gap-3 bg-black/70 backdrop-blur px-5 py-2 rounded-full border border-white/10 text-white select-none">
+  <span class="text-xs tracking-widest text-gray-400">SCORE</span>
+  <span id="scoreEl" class="text-xl font-bold text-green-400">0</span>
+</div>
+
+<!-- TOP BAR -->
+<div class="fixed top-6 right-6 z-40 hidden items-center gap-3 bg-black/70 backdrop-blur px-4 py-2 rounded-full border border-white/10 text-white" id="topBar">
+  <span id="userLabel" class="font-semibold text-sm text-gray-200"></span>
+  <button id="logoutBtn" class="bg-red-500/80 hover:bg-red-600 px-3 py-1 rounded text-sm">
+    Logout
+  </button>
+</div>
+
+<!-- HOME PAGE -->
+<div id="homePage"
+  class="fixed inset-0 z-30 flex flex-col items-center justify-center gap-10 text-white
+         bg-gradient-to-b from-slate-950 via-slate-900 to-black">
+
+
+<h1 class="text-5xl font-extrabold tracking-tight
+           bg-gradient-to-r from-green-400 to-cyan-400
+           bg-clip-text text-transparent">
+  2D Shooting Game
+</h1>
+
+
+  <!-- LEADERBOARD -->
+<div class="w-96 rounded-2xl bg-black/60 backdrop-blur
+            border border-white/10 shadow-2xl">
+
+  <!-- HEADER -->
+  <div class="px-6 py-4 border-b border-white/10 flex items-center justify-center gap-2">
+    <span class="text-xl">🏆</span>
+    <h2 class="text-sm tracking-widest font-extrabold text-gray-200">
+      LEADERBOARD
+    </h2>
   </div>
 
-  <!-- Game over / menu screen -->
-  <div class="fixed inset-0 flex items-center justify-center" id="modelEl">
-    <div class="bg-white max-w-md w-full p-6 text-center rounded-lg">
-      <h1 class="text-4xl font-bold leading-none" id="bigScoreEl">0</h1>
-      <p class="text-sm text-gray-700">Points</p>
-      <div>
-        <button
-          class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-3 rounded-full w-full my-3"
-          id="startGameBtn">
-          Play Again
-        </button>
-      </div>
+  <!-- LIST -->
+  <ul id="leaderboardList"
+      class="px-6 py-4 space-y-2 text-sm font-medium text-gray-200">
+    <!-- JS will inject rows here -->
+  </ul>
+</div>
+
+
+  <button
+    id="playBtn"
+    class="px-10 py-4 rounded-full text-lg font-semibold
+           bg-green-500 hover:bg-green-600
+           shadow-lg shadow-green-500/30 transition">
+    ▶ Start Game
+  </button>
+</div>
+
+<!-- GAME PAGE -->
+<div id="gamePage" class="hidden">
+  <canvas></canvas>
+</div>
+
+<!-- GAME OVER MODAL -->
+<div class="fixed inset-0 hidden items-center justify-center z-50 bg-black/70 backdrop-blur" id="modelEl">
+  <div class="bg-black/80 border border-white/10 rounded-2xl p-8 w-full max-w-sm text-center shadow-2xl">
+    <h1 id="bigScoreEl" class="text-5xl font-extrabold text-green-400">0</h1>
+    <p class="text-xs text-gray-400 mt-1 tracking-widest">FINAL SCORE</p>
+
+    <div class="mt-6 space-y-3">
+      <button
+        id="startGameBtn"
+        class="w-full py-3 rounded-full bg-blue-500 hover:bg-blue-600 text-white font-semibold">
+         Play Again
+      </button>
+
+      <button
+        id="exitGameBtn"
+        class="w-full py-3 rounded-full bg-gray-800 hover:bg-gray-900 text-white font-semibold">
+         Exit to Home
+      </button>
     </div>
   </div>
+</div>
 
-  <!-- Game Canvas -->
-  <canvas></canvas>
+<!-- AUTH MODAL -->
+<div id="authModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur">
+  <div class="bg-black/90 border border-white/10 rounded-2xl p-8 w-80 shadow-2xl text-center text-white">
+    <h2 class="text-2xl font-bold mb-6">Login</h2>
 
-  <!-- Game Script -->
-  <script src="./index.js"></script>
+    <input id="username" placeholder="Username"
+      class="w-full mb-3 px-4 py-2 rounded bg-black/60 border border-white/10 text-white
+             focus:outline-none focus:ring-2 focus:ring-green-500" />
+
+    <input id="password" type="password" placeholder="Password"
+      class="w-full mb-5 px-4 py-2 rounded bg-black/60 border border-white/10 text-white
+             focus:outline-none focus:ring-2 focus:ring-green-500" />
+
+    <button id="loginBtn"
+      class="w-full py-2 rounded bg-green-500 hover:bg-green-600 text-black font-semibold mb-3">
+      Login
+    </button>
+
+    <button id="registerBtn" class="text-xs text-gray-400 hover:underline">
+      Create new account
+    </button>
+  </div>
+</div>
+
+<!-- SCRIPT -->
+<script src="./index.js"></script>
 </body>
 </html>
