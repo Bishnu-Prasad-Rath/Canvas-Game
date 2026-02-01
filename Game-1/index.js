@@ -14,6 +14,8 @@ const homePage = document.getElementById("homePage");
 const gamePage = document.getElementById("gamePage");
 const playBtn = document.getElementById("playBtn");
 const leaderboardList = document.getElementById("leaderboardList");
+const API_BASE = "http://10.160.48.81:5000";
+
 
 exitGameBtn.onclick = () => {
   // stop the game loop
@@ -59,7 +61,7 @@ loginBtn.onclick = async () => {
   .toLowerCase();
   const password = document.getElementById("password").value;
 
-  const res = await fetch("http://localhost:5000/api/auth/login", {
+  const res = await fetch(`${API_BASE}/api/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, password })
@@ -77,23 +79,29 @@ loginBtn.onclick = async () => {
 
 registerBtn.onclick = async () => {
   const username = document.getElementById("username").value
-  .trim()
-  .toLowerCase();
+    .trim()
+    .toLowerCase();
   const password = document.getElementById("password").value;
 
-  await fetch("http://localhost:5000/api/auth/register", {
+  const res = await fetch(`${API_BASE}/api/auth/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, password })
   });
 
-  alert("Registered! Now login.");
-};
+  const data = await res.json();
 
-logoutBtn.onclick = () => {
-  localStorage.clear();
+  if (!res.ok) {
+    alert(data.error || "Registration failed");
+    return;
+  }
+
+  // ✅ AUTO LOGIN
+  localStorage.setItem("token", data.token);
+  localStorage.setItem("username", data.username);
   location.reload();
 };
+
 
 
 // ===== CANVAS SETUP =====
@@ -272,7 +280,7 @@ function init() {
 //Leaderboard loading
 
 async function loadLeaderboard() {
-  const res = await fetch("http://localhost:5000/api/score/leaderboard");
+  const res = await fetch(`${API_BASE}/api/score/leaderboard`);
   const data = await res.json();
 
   leaderboardList.innerHTML = "";
@@ -405,7 +413,7 @@ if (health <= 0 && !isGameOver) {
   // SEND SCORE TO BACKEND (ONLY ONCE)
   const token = localStorage.getItem("token");
   if (token) {
-    fetch("http://localhost:5000/api/score", {
+    fetch(`${API_BASE}/api/score`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
