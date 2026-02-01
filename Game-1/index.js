@@ -14,7 +14,8 @@ const homePage = document.getElementById("homePage");
 const gamePage = document.getElementById("gamePage");
 const playBtn = document.getElementById("playBtn");
 const leaderboardList = document.getElementById("leaderboardList");
-const API_BASE = "http://10.160.48.81:5000";
+const API_BASE = "https://canvas-game-backend.onrender.com";
+
 
 
 exitGameBtn.onclick = () => {
