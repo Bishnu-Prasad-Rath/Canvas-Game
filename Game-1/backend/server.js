@@ -1,9 +1,11 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 
 const app = express();
 
+// ✅ CORS (this already handles OPTIONS)
 app.use(cors({
   origin: "*",
   methods: ["GET", "POST", "OPTIONS"],
@@ -12,21 +14,24 @@ app.use(cors({
 
 app.use(express.json());
 
-// 🔥 MOBILE PREFLIGHT FIX
+// ✅ SAFE preflight handler (NO wildcard route)
 app.use((req, res, next) => {
   if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
+    res.sendStatus(204);
+  } else {
+    next();
   }
-  next();
 });
 
-mongoose.connect("mongodb://127.0.0.1:27017/canvas_game")
+// ✅ MongoDB (Atlas later)
+mongoose.connect(process.env.MONGO_URI || "mongodb://127.0.0.1:27017/canvas_game")
   .then(() => console.log("MongoDB connected"))
-  .catch(console.error);
+  .catch(err => console.error(err));
 
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/score", require("./routes/score"));
 
-app.listen(5000, "0.0.0.0", () => {
-  console.log("Backend running on port 5000");
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log("Backend running on port", PORT);
 });
