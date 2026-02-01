@@ -49,12 +49,14 @@ playBtn.onclick = () => {
 let token = localStorage.getItem("token");
 let isGameOver = false;
 
-
 if (token) {
   authModal.style.display = "none";
   topBar.classList.remove("hidden");
   userLabel.innerText = localStorage.getItem("username");
+
+  loadMyScore();   // ✅ fetch score when page loads
 }
+
 
 loginBtn.onclick = async () => {
   const username = document.getElementById("username").value
@@ -77,6 +79,40 @@ loginBtn.onclick = async () => {
     alert("Login failed");
   }
 };
+
+logoutBtn.onclick = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("username");
+
+  // optional UI reset
+  userLabel.innerText = "";
+  topBar.classList.add("hidden");
+
+  location.reload(); // safest reset
+};
+
+async function loadMyScore() {
+  const token = localStorage.getItem("token");
+  if (!token) return;
+
+  try {
+    const res = await fetch(`${API_BASE}/api/score/me`, {
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    });
+
+    const data = await res.json();
+
+    if (data?.score !== undefined) {
+      scoreEl.innerHTML = data.score;
+      bigScoreEl.innerHTML = data.score;
+    }
+  } catch (err) {
+    console.error("Failed to load user score", err);
+  }
+}
+
 
 registerBtn.onclick = async () => {
   const username = document.getElementById("username").value

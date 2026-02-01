@@ -41,6 +41,21 @@ router.post("/", auth, async (req, res) => {
 });
 
 
+/**
+ * GET MY SCORE (protected)
+ */
+router.get("/me", auth, async (req, res) => {
+  try {
+    const score = await Score.findOne({ userId: req.userId });
+
+    res.json({
+      score: score?.score || 0,
+      lastPlayedAt: score?.lastPlayedAt || null
+    });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch score" });
+  }
+});
 
 
 
