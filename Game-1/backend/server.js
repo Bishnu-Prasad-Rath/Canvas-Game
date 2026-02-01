@@ -24,9 +24,10 @@ app.use((req, res, next) => {
 });
 
 // ✅ MongoDB (Atlas later)
-mongoose.connect(process.env.MONGO_URI || "mongodb://127.0.0.1:27017/canvas_game")
-  .then(() => console.log("MongoDB connected"))
-  .catch(err => console.error(err));
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB Atlas connected"))
+  .catch(console.error);
+
 
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/score", require("./routes/score"));
