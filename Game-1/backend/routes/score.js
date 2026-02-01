@@ -8,6 +8,13 @@ const router = express.Router();
  * SAVE SCORE (protected)
  */
 router.post("/", auth, async (req, res) => {
+  console.log("REQ.USERID:", req.userId);
+  console.log("REQ.BODY:", req.body);
+
+  if (!req.userId) {
+    return res.status(401).json({ error: "Invalid token" });
+  }
+
   let { score } = req.body;
   score = Number(score);
 
@@ -41,20 +48,18 @@ router.post("/", auth, async (req, res) => {
 });
 
 
+
 /**
  * GET MY SCORE (protected)
  */
 router.get("/me", auth, async (req, res) => {
-  try {
-    const score = await Score.findOne({ userId: req.userId });
+  const score = await Score.findOne({ userId: req.userId });
 
-    res.json({
-      score: score?.score || 0,
-      lastPlayedAt: score?.lastPlayedAt || null
-    });
-  } catch (err) {
-    res.status(500).json({ error: "Failed to fetch score" });
+  if (!score) {
+    return res.json({ score: 0 });
   }
+
+  res.json({ score: score.score });
 });
 
 
