@@ -466,13 +466,12 @@ if (health <= 0 && !isGameOver) {
   modalEl.style.display = 'flex';
   bigScoreEl.innerHTML = score;
 
-  // SEND SCORE TO BACKEND (ONLY ONCE)
-  const token = localStorage.getItem("token");
-saveScore(score).then(loadLeaderboard);
-
-
-
+  (async () => {
+    await saveScore(score);
+    loadLeaderboard();   // 🔥 refresh after save
+  })();
 }
+
 
     }
 
