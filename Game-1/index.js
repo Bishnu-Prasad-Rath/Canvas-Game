@@ -54,7 +54,9 @@ if (token) {
 }
 
 loginBtn.onclick = async () => {
-  const username = document.getElementById("username").value;
+  const username = document.getElementById("username").value
+  .trim()
+  .toLowerCase();
   const password = document.getElementById("password").value;
 
   const res = await fetch("http://localhost:5000/api/auth/login", {
@@ -74,7 +76,9 @@ loginBtn.onclick = async () => {
 };
 
 registerBtn.onclick = async () => {
-  const username = document.getElementById("username").value;
+  const username = document.getElementById("username").value
+  .trim()
+  .toLowerCase();
   const password = document.getElementById("password").value;
 
   await fetch("http://localhost:5000/api/auth/register", {
@@ -313,10 +317,11 @@ async function loadLeaderboard() {
 
 loadLeaderboard();
 
-
+let enemyInterval;
 
 function spawnEnemies() {
-  setInterval(() => {
+  clearInterval(enemyInterval);
+  enemyInterval = setInterval(() => {
     const radius = Math.random() * (30 - 10) + 10;
     let x, y;
     if (Math.random() < 0.5) {
@@ -391,7 +396,7 @@ function animate() {
       health -= 20;
       if (soundUnlocked) sounds.hit.play();
       enemies.splice(enemyIndex, 1);
-if (health <= 0) {
+if (health <= 0 && !isGameOver) {
   isGameOver = true;
   cancelAnimationFrame(animationId);
   modalEl.style.display = 'flex';
@@ -404,7 +409,7 @@ if (health <= 0) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": token
+        "Authorization": `Bearer ${token}`
       },
       body: JSON.stringify({ score })
     });
