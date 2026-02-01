@@ -5,9 +5,8 @@ const User = require("../models/User");
 
 const router = express.Router();
 const SECRET = "my_secret_key"; // move to .env later
-
 // =====================
-// REGISTER
+// REGISTER (AUTO LOGIN)
 // =====================
 router.post("/register", async (req, res) => {
   console.log("REGISTER BODY:", req.body);
@@ -29,10 +28,15 @@ router.post("/register", async (req, res) => {
   }
 
   const hashed = await bcrypt.hash(password, 10);
-  await User.create({ username, password: hashed });
+  const user = await User.create({ username, password: hashed });
 
-  res.json({ message: "User registered" });
+  // ✅ CREATE TOKEN
+  const token = jwt.sign({ id: user._id }, SECRET, { expiresIn: "1h" });
+
+  // ✅ AUTO LOGIN RESPONSE
+  res.json({ token, username });
 });
+
 
 // =====================
 // LOGIN
