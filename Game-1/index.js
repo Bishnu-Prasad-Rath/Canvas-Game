@@ -394,6 +394,25 @@ function applyScreenShake() {
   }
 }
 
+async function saveScore(score) {
+  const token = localStorage.getItem("token");
+  if (!token) return;
+
+  try {
+    await fetch(`${API_BASE}/api/score`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ score })
+    });
+  } catch (err) {
+    console.error("Score save failed", err);
+  }
+}
+
+
 function animate() {
   animationId = requestAnimationFrame(animate);
 
@@ -449,16 +468,9 @@ if (health <= 0 && !isGameOver) {
 
   // SEND SCORE TO BACKEND (ONLY ONCE)
   const token = localStorage.getItem("token");
-  if (token) {
-    fetch(`${API_BASE}/api/score`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      },
-      body: JSON.stringify({ score })
-    });
-  }
+saveScore(score);
+
+
 }
 
     }
