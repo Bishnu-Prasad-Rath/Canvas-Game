@@ -81,15 +81,15 @@ loginBtn.onclick = async () => {
 };
 
 logoutBtn.onclick = () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("username");
+  localStorage.clear();
 
-  // optional UI reset
-  userLabel.innerText = "";
+  authModal.style.display = "flex"; 
   topBar.classList.add("hidden");
+  userLabel.innerText = "";
 
-  location.reload(); // safest reset
+  setTimeout(() => location.reload(), 300);
 };
+
 
 async function loadMyScore() {
   const token = localStorage.getItem("token");
