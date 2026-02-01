@@ -68,17 +68,18 @@ router.get("/me", auth, async (req, res) => {
  * GET LEADERBOARD (public)
  */
 router.get("/leaderboard", async (req, res) => {
-  const leaderboard = await Score.find()
+  const leaderboard = await Score.find({ score: { $gt: 0 } })
     .sort({ score: -1 })
     .limit(10)
     .populate("userId", "username");
 
   const formatted = leaderboard.map(item => ({
-    username: item.userId.username,
+    username: item.userId?.username || "Unknown",
     score: item.score
   }));
 
   res.json(formatted);
 });
+
 
 module.exports = router;
