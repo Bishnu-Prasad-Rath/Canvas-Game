@@ -468,7 +468,8 @@ if (health <= 0 && !isGameOver) {
 
   // SEND SCORE TO BACKEND (ONLY ONCE)
   const token = localStorage.getItem("token");
-saveScore(score);
+saveScore(score).then(loadLeaderboard);
+
 
 
 }
