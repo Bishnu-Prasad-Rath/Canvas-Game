@@ -398,20 +398,24 @@ async function saveScore(score) {
   const token = localStorage.getItem("token");
   if (!token) return;
 
-  const res = await fetch(`${API_BASE}/api/score`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
-    },
-    body: JSON.stringify({ score })
-  });
+  try {
+    const res = await fetch(`${API_BASE}/api/score`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ score })
+    });
 
-  if (res.status === 401) {
-    localStorage.clear();
-    location.reload();
+    if (!res.ok) {
+      console.warn("Score not saved:", res.status);
+    }
+  } catch (err) {
+    console.error("Score save failed:", err);
   }
 }
+
 
 
 
