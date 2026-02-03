@@ -32,7 +32,7 @@ router.post("/register", async (req, res) => {
   const user = await User.create({ username, password: hashed });
 
   // ✅ CREATE TOKEN
-  const token = jwt.sign({ id: user._id }, SECRET, { expiresIn: "1h" });
+  const token = jwt.sign({ id: user._id }, SECRET, { expiresIn: "7d" });
 
   // ✅ AUTO LOGIN RESPONSE
   res.json({ token, username });
@@ -62,7 +62,7 @@ router.post("/login", async (req, res) => {
     return res.status(401).json({ error: "Wrong password" });
   }
 
-  const token = jwt.sign({ id: user._id }, SECRET, { expiresIn: "1h" });
+  const token = jwt.sign({ id: user._id }, SECRET, { expiresIn: "7d" });
   res.json({ token, username });
 });
 

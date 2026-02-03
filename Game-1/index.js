@@ -398,19 +398,21 @@ async function saveScore(score) {
   const token = localStorage.getItem("token");
   if (!token) return;
 
-  try {
-    await fetch(`${API_BASE}/api/score`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      },
-      body: JSON.stringify({ score })
-    });
-  } catch (err) {
-    console.error("Score save failed", err);
+  const res = await fetch(`${API_BASE}/api/score`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify({ score })
+  });
+
+  if (res.status === 401) {
+    localStorage.clear();
+    location.reload();
   }
 }
+
 
 
 function animate() {
@@ -468,7 +470,7 @@ if (health <= 0 && !isGameOver) {
 
   (async () => {
     await saveScore(score);
-    loadLeaderboard();   // 🔥 refresh after save
+     // 🔥 refresh after save
   })();
 }
 
