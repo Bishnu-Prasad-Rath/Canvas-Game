@@ -17,17 +17,8 @@ const allowedOrigins = [
   'https://40988640-6702-44f2-b6f0-18885e0e22eb-00-xq0l3m7wo5sk.pike.replit.dev' // 🔥 ADD THIS EXACT LINE
 ];
 
-app.use(cors({
-  origin: function (origin, callback) {
-    // allow requests with no origin (like mobile apps or curl requests)
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Blocked by CORS policy'));
-    }
-  },
-  credentials: true
-}));
+// Fire the bouncer! Allow all frontends to connect.
+app.use(cors());
 
 // Middleware to parse incoming JSON data from the frontend fetch() calls
 app.use(express.json());
