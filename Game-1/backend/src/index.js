@@ -9,7 +9,6 @@ const PORT = process.env.PORT || 3000;
 // ==========================================
 // 🛡️ CORS & Parsers
 // ==========================================
-// Allow all origins during setup, or specify your Vercel frontend URL
 app.use(cors({
   origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -17,19 +16,63 @@ app.use(cors({
 }));
 
 app.options('*', cors());
-
 app.use(express.json());
 
+// Fast favicon bypass
+app.get('/favicon.ico', (req, res) => res.status(204).end());
+
 // ==========================================
-// 🗄️ Database Connection
+// 🗄️ Serverless MongoDB Connection Cache
 // ==========================================
-if (process.env.MONGODB_URI) {
-  mongoose.connect(process.env.MONGODB_URI)
-    .then(() => console.log('✅ Connected to MongoDB Atlas'))
-    .catch((err) => console.error('❌ MongoDB Connection Error:', err));
-} else {
-  console.warn('⚠️ MONGODB_URI environment variable is missing.');
+let cached = global.mongoose;
+
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
 }
+
+async function connectDB() {
+  if (cached.conn) {
+    return cached.conn;
+  }
+
+  if (!cached.promise) {
+    const uri = process.env.MONGODB_URI;
+    if (!uri) {
+      throw new Error('MONGODB_URI environment variable is not defined.');
+    }
+
+    const opts = {
+      bufferCommands: false,
+      serverSelectionTimeoutMS: 5000
+    };
+
+    cached.promise = mongoose.connect(uri, opts).then((mongooseInstance) => {
+      console.log('✅ Connected to MongoDB Atlas');
+      return mongooseInstance;
+    });
+  }
+
+  try {
+    cached.conn = await cached.promise;
+  } catch (e) {
+    cached.promise = null;
+    throw e;
+  }
+
+  return cached.conn;
+}
+
+// Middleware to ensure DB connection before executing any API route
+app.use(async (req, res, next) => {
+  if (req.path === '/favicon.ico') return next();
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    console.error('❌ Database connection failed during request:', err.message);
+    res.status(500).json({ error: 'Database connection failed', details: err.message });
+  }
+});
 
 // ==========================================
 // 🚦 Routes
