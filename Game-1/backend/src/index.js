@@ -1,21 +1,25 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // ==========================================
-// 🛡️ CORS & Parsers
+// 🛡️ Global CORS & Preflight Handler
 // ==========================================
-app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
 
-app.options('*', cors());
+  // Terminate preflight OPTIONS requests immediately
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  next();
+});
+
 app.use(express.json());
 
 // Fast favicon bypass
@@ -62,15 +66,15 @@ async function connectDB() {
   return cached.conn;
 }
 
-// Middleware to ensure DB connection before executing any API route
+// Middleware to ensure DB connection before executing routes
 app.use(async (req, res, next) => {
-  if (req.path === '/favicon.ico') return next();
+  if (req.path === '/favicon.ico' || req.path === '/api/v1/healthCheck') return next();
   try {
     await connectDB();
     next();
   } catch (err) {
     console.error('❌ Database connection failed during request:', err.message);
-    res.status(500).json({ error: 'Database connection failed', details: err.message });
+    return res.status(500).json({ error: 'Database connection failed', details: err.message });
   }
 });
 
@@ -94,7 +98,7 @@ app.get('/', (req, res) => {
 });
 
 // ==========================================
-// 🚀 Export for Vercel / Run Locally
+// 🚀 Export for Vercel / Local Dev
 // ==========================================
 if (process.env.NODE_ENV !== 'production') {
   app.listen(PORT, () => {
