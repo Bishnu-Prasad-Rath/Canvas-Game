@@ -5,7 +5,7 @@
 const isLocalhost = window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost";
 const API_BASE = isLocalhost 
   ? "http://localhost:3000" 
-  : "https://canvas-game-bay.vercel.app/"; 
+  : "https://canvas-game-bay.vercel.app"; 
 
 // ==========================================
 // 🖥️ UI ELEMENTS & DOM SETUP
